@@ -3,8 +3,8 @@ import { ConvexPolygon } from "./shared/Shape/ConvexPolygon.ts";
 import { Vector2D } from "./shared/Vector.ts";
 
 export class Player {
-  private v = new Vector2D(0, 0);
-  private a = new Vector2D(0, 0);
+  private vel = new Vector2D(0, 0);
+  private acc = new Vector2D(0, 0);
 
   private readonly polygon: ConvexPolygon;
 
@@ -33,14 +33,14 @@ export class Player {
     const accPerSec = 3;
     const heading = this.polygon.getHeading();
 
-    this.a = Vector2D.fromAngle(heading).setMagnitude(accPerSec * (timestamp / 1000));
+    this.acc = Vector2D.fromAngle(heading).setMagnitude(accPerSec * (timestamp / 1000));
   }
 
   update(timestamp: number) {
     if (Keyboard.getIsKeyPressed("KeyW")) {
       this.accelerateForward(timestamp);
     } else {
-      this.a = Vector2D.zero();
+      this.acc = Vector2D.zero();
     }
 
     if (Keyboard.getIsKeyPressed("KeyD")) {
@@ -51,8 +51,8 @@ export class Player {
       this.turnLeft();
     }
 
-    this.v.sum(this.a);
-    this.polygon.getPosition().sum(this.v);
+    this.vel = this.vel.sum(this.acc);
+    this.polygon.move(this.vel);
   }
 
   draw(ctx: CanvasRenderingContext2D) {

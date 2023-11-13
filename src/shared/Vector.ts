@@ -1,7 +1,7 @@
 export class Vector2D {
   constructor(
-    private x: number,
-    private y: number,
+    private readonly x: number,
+    private readonly y: number,
   ) {}
 
   static zero() {
@@ -39,31 +39,25 @@ export class Vector2D {
     }
 
     const diff = (m + by) / m;
-    this.x *= diff;
-    this.y *= diff;
-    return this;
+    return new Vector2D(this.x * diff, this.y * diff);
   }
 
   setMagnitude(to: number) {
     const m = this.getMagnitude();
     let diff = m === 0 ? to : to / m;
-    this.x *= diff;
-    this.y *= diff;
-    return this;
+    return new Vector2D(this.x * diff, this.y * diff);
   }
 
   rotate(rad: number) {
-    const { x, y } = this;
-    this.x = x * Math.cos(rad) - y * Math.sin(rad);
-    this.y = x * Math.sin(rad) + y * Math.cos(rad);
-    return this;
+    return new Vector2D(
+      this.x * Math.cos(rad) - this.y * Math.sin(rad),
+      this.x * Math.sin(rad) + this.y * Math.cos(rad),
+    );
   }
 
   normalize() {
     const m = this.getMagnitude();
-    this.x /= m;
-    this.y /= m;
-    return this;
+    return new Vector2D(this.x / m, this.y / m);
   }
 
   /**
@@ -78,8 +72,6 @@ export class Vector2D {
   }
 
   sum(vector: Vector2D) {
-    this.x += vector.getX();
-    this.y += vector.getY();
-    return this;
+    return new Vector2D(this.x + vector.getX(), this.y + vector.getY());
   }
 }
