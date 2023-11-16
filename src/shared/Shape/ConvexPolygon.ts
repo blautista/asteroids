@@ -1,13 +1,8 @@
-import { Vector2D } from "../Vector.ts";
 import { Polygon } from "./Polygon.ts";
 
 export class ConvexPolygon extends Polygon {
-  private getShapeNormalVectors(): Vector2D[] {
-    return this.getVectors().map((v) => v.normal().normalize());
-  }
-
   collidesWith(polygon: ConvexPolygon) {
-    for (const v of this.getShapeNormalVectors()) {
+    for (const v of this.getEdgeNormalVectors()) {
       const p1 = this.projection(v);
       const p2 = polygon.projection(v);
 
@@ -16,7 +11,7 @@ export class ConvexPolygon extends Polygon {
       }
     }
 
-    for (const v of polygon.getShapeNormalVectors()) {
+    for (const v of polygon.getEdgeNormalVectors()) {
       const p1 = this.projection(v);
       const p2 = polygon.projection(v);
 

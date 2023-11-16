@@ -32,8 +32,8 @@ export abstract class Polygon extends Shape {
       const p1 = points[i];
       const p2 = points[i + 1] ?? points[0];
 
-      ctx.moveTo(p1.getX(), p1.getY());
-      ctx.lineTo(p2.getX(), p2.getY());
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
     }
     ctx.stroke();
 
@@ -44,19 +44,16 @@ export abstract class Polygon extends Shape {
     return this.points.map(([x, y]) => new Vector2D(x, y).rotate(this.heading).sum(this.position));
   }
 
-  getVectors() {
-    const vectors: Vector2D[] = [];
+  getEdgeVectors() {
+    return this.getPointsRelativeToPosition().map((v1, i, arr) => {
+      const v2 = arr[i + 1] ?? arr[0];
 
-    for (let i = 0; i < this.points.length; i++) {
-      const [x, y] = this.points[i];
-      const [currX, currY] = this.points[i + 1] ?? this.points[0];
+      return v2.subtract(v1);
+    });
+  }
 
-      const A = new Vector2D(currX - x, currY - y).rotate(this.heading);
-
-      vectors.push(A);
-    }
-
-    return vectors;
+  protected getEdgeNormalVectors(): Vector2D[] {
+    return this.getEdgeVectors().map((v) => v.normal().normalize());
   }
 
   protected projection(axis: Vector2D) {

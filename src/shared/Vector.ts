@@ -1,7 +1,7 @@
 export class Vector2D {
   constructor(
-    private readonly x: number,
-    private readonly y: number,
+    public readonly x: number,
+    public readonly y: number,
   ) {}
 
   static zero() {
@@ -14,14 +14,6 @@ export class Vector2D {
 
   static fromAngle(rad: number) {
     return Vector2D.right().rotate(rad);
-  }
-
-  getX() {
-    return this.x;
-  }
-
-  getY(): number {
-    return this.y;
   }
 
   dotProduct(vector: Vector2D): number {
@@ -44,7 +36,12 @@ export class Vector2D {
 
   setMagnitude(to: number) {
     const m = this.getMagnitude();
-    let diff = m === 0 ? to : to / m;
+
+    if (m === 0) {
+      return Vector2D.zero();
+    }
+
+    const diff = to / m;
     return new Vector2D(this.x * diff, this.y * diff);
   }
 
@@ -72,6 +69,18 @@ export class Vector2D {
   }
 
   sum(vector: Vector2D) {
-    return new Vector2D(this.x + vector.getX(), this.y + vector.getY());
+    return new Vector2D(this.x + vector.x, this.y + vector.y);
+  }
+
+  subtract(vector: Vector2D) {
+    return this.sum(vector.opposite());
+  }
+
+  opposite() {
+    return new Vector2D(-this.x, -this.y);
+  }
+
+  equals(vector: Vector2D) {
+    return this.x === vector.x && this.y === vector.y;
   }
 }
