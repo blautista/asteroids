@@ -72,6 +72,10 @@ export class Vector2D {
     return new Vector2D(this.x + vector.x, this.y + vector.y);
   }
 
+  multiply(by: number) {
+    return new Vector2D(this.x * by, this.y * by);
+  }
+
   subtract(vector: Vector2D) {
     return this.sum(vector.opposite());
   }
@@ -82,5 +86,9 @@ export class Vector2D {
 
   equals(vector: Vector2D) {
     return this.x === vector.x && this.y === vector.y;
+  }
+
+  clone() {
+    return new Vector2D(this.x, this.y);
   }
 }

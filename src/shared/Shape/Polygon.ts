@@ -44,12 +44,16 @@ export abstract class Polygon extends Shape {
     return this.points.map(([x, y]) => new Vector2D(x, y).rotate(this.heading).sum(this.position));
   }
 
-  getEdgeVectors() {
+  protected getEdgeVectors() {
     return this.getPointsRelativeToPosition().map((v1, i, arr) => {
       const v2 = arr[i + 1] ?? arr[0];
 
       return v2.subtract(v1);
     });
+  }
+
+  getVertex(i: number) {
+    return this.getPointsRelativeToPosition()[i];
   }
 
   protected getEdgeNormalVectors(): Vector2D[] {

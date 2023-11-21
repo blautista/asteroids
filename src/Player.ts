@@ -1,10 +1,13 @@
 import { Keyboard } from "./shared/Keyboard.ts";
 import { ConvexPolygon } from "./shared/Shape/ConvexPolygon.ts";
 import { Vector2D } from "./shared/Vector.ts";
+import { Bullet } from "./Bullet.ts";
+import { GameObject2D } from "./shared/2DGameObject.ts";
 
-export class Player {
+export class Player implements GameObject2D {
   private vel = new Vector2D(0, 0);
   private acc = new Vector2D(0, 0);
+  bullets = new Set<Bullet>();
 
   private readonly polygon: ConvexPolygon;
 
@@ -36,9 +39,38 @@ export class Player {
     this.acc = Vector2D.fromAngle(heading).setMagnitude(accPerSec * (timestamp / 1000));
   }
 
-  update(timestamp: number) {
+  getShipTip() {
+    return this.polygon.getVertex(0);
+  }
+
+  private readonly bulletCooldown = 700;
+  private isShotCoolingDown = false;
+
+  private resetBulletCooldown() {
+    this.isShotCoolingDown = false;
+  }
+
+  shoot() {
+    if (this.isShotCoolingDown) return;
+
+    this.bullets.add(
+      new Bullet(
+        this.getShipTip(),
+        this.vel.sum(Vector2D.fromAngle(this.polygon.getHeading()).multiply(5)),
+      ),
+    );
+    this.isShotCoolingDown = true;
+
+    window.setTimeout(this.resetBulletCooldown.bind(this), this.bulletCooldown);
+  }
+
+  update(delta: number) {
+    if (Keyboard.getIsKeyPressed("Space")) {
+      this.shoot();
+    }
+
     if (Keyboard.getIsKeyPressed("KeyW")) {
-      this.accelerateForward(timestamp);
+      this.accelerateForward(delta);
     } else {
       this.acc = Vector2D.zero();
     }
@@ -57,6 +89,10 @@ export class Player {
 
   draw(ctx: CanvasRenderingContext2D) {
     this.polygon.draw(ctx);
+    this.bullets.forEach((bullet) => {
+      bullet.update();
+      bullet.draw(ctx);
+    });
   }
 
   collidesWith(polygon: ConvexPolygon) {
