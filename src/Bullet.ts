@@ -10,7 +10,7 @@ export class Bullet extends Point implements GameObject2D {
     super(position);
   }
 
-  update() {
+  update(delta: number) {
     this.move(this.velocity);
   }
 

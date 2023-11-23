@@ -1,12 +1,7 @@
 import { Shape } from "./Shape.ts";
 import { ConvexPolygon } from "./ConvexPolygon.ts";
-import { Vector2D } from "../Vector.ts";
 
 export class Point extends Shape {
-  constructor(position: Vector2D) {
-    super(position.x, position.y);
-  }
-
   collidesWith(shape: Shape) {
     if (shape instanceof Point) {
       return shape.position.equals(this.position);

@@ -2,23 +2,15 @@ import { Vector2D } from "../Vector.ts";
 import { Shape } from "./Shape.ts";
 
 export abstract class Polygon extends Shape {
-  private heading = 0;
+  heading = 0;
   private readonly points: [number, number][];
 
-  constructor(x: number, y: number, points: [number, number][], size: number) {
-    super(x, y);
+  constructor(initialPosition: Vector2D, points: [number, number][], size: number) {
+    super(initialPosition);
     this.points = points.map(([x, y]) => [x * size, y * size]);
   }
 
-  getHeading() {
-    return this.heading;
-  }
-
-  setHeading(rad: number) {
-    this.heading = rad;
-  }
-
-  changeHeading(rad: number) {
+  rotate(rad: number) {
     this.heading += rad;
   }
 
@@ -52,7 +44,7 @@ export abstract class Polygon extends Shape {
     });
   }
 
-  getVertex(i: number) {
+  protected getVertex(i: number) {
     return this.getPointsRelativeToPosition()[i];
   }
 

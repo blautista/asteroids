@@ -16,4 +16,12 @@ export class CanvasRenderer {
   getCanvas() {
     return this.canvas;
   }
+
+  get width() {
+    return this.canvas.width;
+  }
+
+  get height() {
+    return this.canvas.height;
+  }
 }

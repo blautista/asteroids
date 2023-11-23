@@ -16,6 +16,10 @@ export class Vector2D {
     return Vector2D.right().rotate(rad);
   }
 
+  static fromRandomAngle() {
+    return Vector2D.fromAngle(Math.random() * Math.PI * 2);
+  }
+
   dotProduct(vector: Vector2D): number {
     return vector.x * this.x + vector.y * this.y;
   }

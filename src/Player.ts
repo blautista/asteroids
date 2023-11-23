@@ -4,17 +4,16 @@ import { Vector2D } from "./shared/Vector.ts";
 import { Bullet } from "./Bullet.ts";
 import { GameObject2D } from "./shared/2DGameObject.ts";
 
-export class Player implements GameObject2D {
+export class Player extends ConvexPolygon implements GameObject2D {
   private vel = new Vector2D(0, 0);
   private acc = new Vector2D(0, 0);
+  health = 5;
+  score = 0;
   bullets = new Set<Bullet>();
 
-  private readonly polygon: ConvexPolygon;
-
-  constructor(x: number, y: number) {
-    this.polygon = new ConvexPolygon(
-      x,
-      y,
+  constructor(initialPosition: Vector2D) {
+    super(
+      initialPosition,
       [
         [2, 0],
         [-2, 1],
@@ -25,25 +24,24 @@ export class Player implements GameObject2D {
   }
 
   turnRight() {
-    this.polygon.changeHeading(Math.PI / 32);
+    this.rotate(Math.PI / 32);
   }
 
   turnLeft() {
-    this.polygon.changeHeading(-Math.PI / 32);
+    this.rotate(-Math.PI / 32);
   }
 
   accelerateForward(timestamp: number) {
     const accPerSec = 3;
-    const heading = this.polygon.getHeading();
 
-    this.acc = Vector2D.fromAngle(heading).setMagnitude(accPerSec * (timestamp / 1000));
+    this.acc = Vector2D.fromAngle(this.heading).setMagnitude(accPerSec * (timestamp / 1000));
   }
 
   getShipTip() {
-    return this.polygon.getVertex(0);
+    return this.getVertex(0);
   }
 
-  private readonly bulletCooldown = 700;
+  private readonly bulletCooldown = 200;
   private isShotCoolingDown = false;
 
   private resetBulletCooldown() {
@@ -54,10 +52,7 @@ export class Player implements GameObject2D {
     if (this.isShotCoolingDown) return;
 
     this.bullets.add(
-      new Bullet(
-        this.getShipTip(),
-        this.vel.sum(Vector2D.fromAngle(this.polygon.getHeading()).multiply(5)),
-      ),
+      new Bullet(this.getShipTip(), this.vel.sum(Vector2D.fromAngle(this.heading).multiply(5))),
     );
     this.isShotCoolingDown = true;
 
@@ -84,18 +79,28 @@ export class Player implements GameObject2D {
     }
 
     this.vel = this.vel.sum(this.acc);
-    this.polygon.move(this.vel);
+    this.move(this.vel);
+
+    if (this.position.x < 0) {
+      this.position = new Vector2D(1024, this.position.y);
+    } else if (this.position.x > 1024) {
+      this.position = new Vector2D(0, this.position.y);
+    }
+
+    if (this.position.y < 0) {
+      this.position = new Vector2D(this.position.x, 768);
+    } else if (this.position.y > 768) {
+      this.position = new Vector2D(this.position.x, 0);
+    }
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
-    this.polygon.draw(ctx);
-    this.bullets.forEach((bullet) => {
-      bullet.update();
-      bullet.draw(ctx);
-    });
+  onAsteroidCollision() {
+    this.health--;
+    console.log("hit! ", this.health);
   }
 
-  collidesWith(polygon: ConvexPolygon) {
-    return this.polygon.collidesWith(polygon);
+  onAsteroidDestroyed() {
+    this.score++;
+    console.log("scored! ", this.score);
   }
 }
