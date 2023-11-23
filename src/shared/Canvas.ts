@@ -1,4 +1,4 @@
-export class CanvasRenderer {
+export class Canvas {
   private readonly canvas: HTMLCanvasElement;
 
   constructor(private parent: HTMLElement) {

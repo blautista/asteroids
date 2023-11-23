@@ -1,28 +1,28 @@
-import { CanvasRenderer } from "./shared/CanvasRenderer.ts";
+import { Canvas } from "./shared/Canvas.ts";
 import { Player } from "./Player.ts";
 import { Asteroid } from "./Asteroid.ts";
 import { Vector2D } from "./shared/Vector.ts";
 
 export class Game {
-  private canvasRenderer: CanvasRenderer;
+  private canvas: Canvas;
   private player = new Player(new Vector2D(400, 400));
   private asteroids = new Set<Asteroid>();
   private lastTimestamp = 0;
   private frameId: null | number = null;
 
   constructor(parent: HTMLElement) {
-    this.canvasRenderer = new CanvasRenderer(parent);
+    this.canvas = new Canvas(parent);
   }
 
   drawBackground() {
-    const ctx = this.canvasRenderer.getContext();
+    const ctx = this.canvas.getContext();
     ctx.fillStyle = "black";
     ctx.strokeStyle = "white";
-    ctx.fillRect(0, 0, this.canvasRenderer.width, this.canvasRenderer.height);
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   loop(timestamp: number) {
-    const ctx = this.canvasRenderer.getContext();
+    const ctx = this.canvas.getContext();
 
     this.drawBackground();
     const delta = timestamp - this.lastTimestamp;
@@ -71,9 +71,7 @@ export class Game {
 
   initAsteroids() {
     for (let i = 0; i < 10; i++) {
-      this.asteroids.add(
-        Asteroid.createFromEdge(this.canvasRenderer.width, this.canvasRenderer.height),
-      );
+      this.asteroids.add(Asteroid.createFromEdge(this.canvas.width, this.canvas.height));
     }
   }
 
