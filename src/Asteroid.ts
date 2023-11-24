@@ -14,7 +14,11 @@ export class Asteroid extends ConvexPolygon implements GameObject2D {
     return new Asteroid(new Vector2D(x, y), Vector2D.fromRandomAngle().multiply(3));
   }
 
-  constructor(position: Vector2D, velocity: Vector2D) {
+  constructor(
+    position: Vector2D,
+    velocity: Vector2D,
+    public size = 3,
+  ) {
     super(
       position,
       [
@@ -27,7 +31,7 @@ export class Asteroid extends ConvexPolygon implements GameObject2D {
         [-1, 0],
         [-Math.cos(Math.PI / 4), -Math.sin(Math.PI / 4)],
       ],
-      40,
+      size * 10,
     );
     this.vel = velocity;
   }
