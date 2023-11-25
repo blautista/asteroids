@@ -97,6 +97,8 @@ export class Game {
       this.initAsteroids();
     }
 
+    this.player.drawHealth(this.canvas.getContext());
+
     this.frameId = window.requestAnimationFrame(this.loop.bind(this));
     this.lastTimestamp = timestamp;
   }

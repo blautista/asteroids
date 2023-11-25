@@ -4,6 +4,16 @@ import { Vector2D } from "./shared/Vector.ts";
 import { Bullet } from "./Bullet.ts";
 import { GameObject2D } from "./shared/2DGameObject.ts";
 
+const playerPoints = [
+  [2, 0],
+  [-2, 1],
+  [-2, -1],
+] as [number, number][];
+
+function createPlayerPolygon(initialPosition: Vector2D) {
+  return new ConvexPolygon(initialPosition, playerPoints, 10);
+}
+
 export class Player extends ConvexPolygon implements GameObject2D {
   private vel = new Vector2D(0, 0);
   private acc = new Vector2D(0, 0);
@@ -12,15 +22,7 @@ export class Player extends ConvexPolygon implements GameObject2D {
   bullets = new Set<Bullet>();
 
   constructor(initialPosition: Vector2D) {
-    super(
-      initialPosition,
-      [
-        [2, 0],
-        [-2, 1],
-        [-2, -1],
-      ],
-      10,
-    );
+    super(initialPosition, playerPoints, 10);
   }
 
   turnRight() {
@@ -102,5 +104,15 @@ export class Player extends ConvexPolygon implements GameObject2D {
   onAsteroidDestroyed() {
     this.score++;
     console.log("scored! ", this.score);
+  }
+
+  drawHealth(ctx: CanvasRenderingContext2D) {
+    const leftOffset = 200;
+
+    for (let i = 0; i < this.health; i++) {
+      const polygon = createPlayerPolygon(new Vector2D(i * 24 + leftOffset, 100));
+      polygon.rotate(-Math.PI / 2);
+      polygon.draw(ctx);
+    }
   }
 }
