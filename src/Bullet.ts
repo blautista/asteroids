@@ -12,6 +12,18 @@ export class Bullet extends Point implements GameObject2D {
 
   update(delta: number) {
     this.move(this.velocity);
+
+    if (this.position.x < 0) {
+      this.position = new Vector2D(1024, this.position.y);
+    } else if (this.position.x > 1024) {
+      this.position = new Vector2D(0, this.position.y);
+    }
+
+    if (this.position.y < 0) {
+      this.position = new Vector2D(this.position.x, 768);
+    } else if (this.position.y > 768) {
+      this.position = new Vector2D(this.position.x, 0);
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D) {
