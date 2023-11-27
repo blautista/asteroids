@@ -12,8 +12,14 @@ export class Asteroid extends ConvexPolygon implements GameObject2D {
     const x = Math.random() > 0.5 ? -APPEARANCE_OFFSET : width + APPEARANCE_OFFSET;
     const y = Math.random() * height;
 
-    return new Asteroid(new Vector2D(x, y), Vector2D.fromRandomAngle().multiply(3));
+    return new Asteroid(new Vector2D(x, y), Vector2D.fromRandomAngle().multiply(1));
   }
+
+  static readonly scoresBySize = {
+    1: 100,
+    2: 50,
+    3: 20,
+  };
 
   constructor(
     position: Vector2D,
@@ -40,5 +46,9 @@ export class Asteroid extends ConvexPolygon implements GameObject2D {
   update(delta: number, canvas: Canvas): void {
     this.move(this.vel);
     this.position = canvas.warpPositionAround(this.position);
+  }
+
+  score() {
+    return Asteroid.scoresBySize[this.size as keyof typeof Asteroid.scoresBySize];
   }
 }

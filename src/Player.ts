@@ -4,6 +4,7 @@ import { Vector2D } from "./shared/Vector.ts";
 import { Bullet } from "./Bullet.ts";
 import { GameObject2D } from "./shared/2DGameObject.ts";
 import { Canvas } from "./shared/Canvas.ts";
+import { Asteroid } from "./Asteroid.ts";
 
 const playerPoints = [
   [2, 0],
@@ -91,9 +92,8 @@ export class Player extends ConvexPolygon implements GameObject2D {
     console.log("hit! ", this.health);
   }
 
-  onAsteroidDestroyed() {
-    this.score++;
-    console.log("scored! ", this.score);
+  onAsteroidDestroyed(asteroid: Asteroid) {
+    this.addScore(asteroid.score());
   }
 
   drawHealth(ctx: CanvasRenderingContext2D) {
@@ -104,6 +104,13 @@ export class Player extends ConvexPolygon implements GameObject2D {
       polygon.rotate(-Math.PI / 2);
       polygon.draw(ctx);
     }
+  }
+
+  drawScore(ctx: CanvasRenderingContext2D) {
+    const leftOffset = 200;
+
+    ctx.font = "40px monospace";
+    ctx.strokeText(String(this.score), leftOffset, 40);
   }
 
   addScore(amount: number) {

@@ -40,7 +40,7 @@ export class Game {
         new Asteroid(asteroid.position, Vector2D.fromRandomAngle(), asteroid.size - 1),
       );
     }
-    this.player.onAsteroidDestroyed();
+    this.player.onAsteroidDestroyed(asteroid);
   }
 
   private updatePlayerBullets(delta: number) {
@@ -81,7 +81,6 @@ export class Game {
     const delta = timestamp - this.lastTimestamp;
 
     this.player.update(delta, this.canvas);
-    this.player.draw(this.canvas.context);
 
     this.updatePlayerBullets(delta);
     this.updateAsteroids(delta);
@@ -91,6 +90,8 @@ export class Game {
     }
 
     this.player.drawHealth(this.canvas.context);
+    this.player.drawScore(this.canvas.context);
+    this.player.draw(this.canvas.context);
 
     this.frameId = window.requestAnimationFrame(this.loop.bind(this));
     this.lastTimestamp = timestamp;
