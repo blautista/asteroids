@@ -56,7 +56,13 @@ export class Player extends ConvexPolygon implements GameObject2D {
     if (this.isShotCoolingDown) return;
 
     this.bullets.add(
-      new Bullet(this.getShipTip(), this.vel.sum(Vector2D.fromAngle(this.heading).multiply(5))),
+      new Bullet(
+        this.getShipTip(),
+        this.vel.sum(Vector2D.fromAngle(this.heading).multiply(5)),
+        (bullet) => {
+          this.bullets.delete(bullet);
+        },
+      ),
     );
     this.isShotCoolingDown = true;
 
