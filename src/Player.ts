@@ -3,6 +3,7 @@ import { ConvexPolygon } from "./shared/Shape/ConvexPolygon.ts";
 import { Vector2D } from "./shared/Vector.ts";
 import { Bullet } from "./Bullet.ts";
 import { GameObject2D } from "./shared/2DGameObject.ts";
+import { Canvas } from "./shared/Canvas.ts";
 
 const playerPoints = [
   [2, 0],
@@ -61,7 +62,7 @@ export class Player extends ConvexPolygon implements GameObject2D {
     window.setTimeout(this.resetBulletCooldown.bind(this), this.bulletCooldown);
   }
 
-  update(delta: number) {
+  update(delta: number, canvas: Canvas) {
     if (Keyboard.getIsKeyPressed("Space")) {
       this.shoot();
     }
@@ -82,18 +83,7 @@ export class Player extends ConvexPolygon implements GameObject2D {
 
     this.vel = this.vel.sum(this.acc);
     this.move(this.vel);
-
-    if (this.position.x < 0) {
-      this.position = new Vector2D(1024, this.position.y);
-    } else if (this.position.x > 1024) {
-      this.position = new Vector2D(0, this.position.y);
-    }
-
-    if (this.position.y < 0) {
-      this.position = new Vector2D(this.position.x, 768);
-    } else if (this.position.y > 768) {
-      this.position = new Vector2D(this.position.x, 0);
-    }
+    this.position = canvas.warpPositionAround(this.position);
   }
 
   onAsteroidCollision() {
@@ -114,5 +104,13 @@ export class Player extends ConvexPolygon implements GameObject2D {
       polygon.rotate(-Math.PI / 2);
       polygon.draw(ctx);
     }
+  }
+
+  addScore(amount: number) {
+    this.score += amount;
+  }
+
+  resetScore() {
+    this.score = 0;
   }
 }

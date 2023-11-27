@@ -2,7 +2,6 @@ import { Canvas } from "./shared/Canvas.ts";
 import { Player } from "./Player.ts";
 import { Asteroid } from "./Asteroid.ts";
 import { Vector2D } from "./shared/Vector.ts";
-import { GameObject2D } from "./shared/2DGameObject.ts";
 import { Bullet } from "./Bullet.ts";
 
 export class Game {
@@ -23,12 +22,8 @@ export class Game {
     this.player = this.createPlayer();
   }
 
-  private draw(entity: GameObject2D) {
-    entity.draw(this.canvas.getContext());
-  }
-
   private drawBackground() {
-    const ctx = this.canvas.getContext();
+    const ctx = this.canvas.context;
     ctx.fillStyle = "black";
     ctx.strokeStyle = "white";
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -51,7 +46,7 @@ export class Game {
   private updatePlayerBullets(delta: number) {
     for (const bullet of this.player.bullets) {
       let collided = false;
-      bullet.update(delta);
+      bullet.update(delta, this.canvas);
 
       for (const asteroid of this.asteroids) {
         if (bullet.collidesWith(asteroid)) {
@@ -62,14 +57,14 @@ export class Game {
       }
 
       if (!collided) {
-        this.draw(bullet);
+        bullet.draw(this.canvas.context);
       }
     }
   }
 
   private updateAsteroids(delta: number) {
     for (const asteroid of this.asteroids) {
-      asteroid.update(delta);
+      asteroid.update(delta, this.canvas);
 
       if (asteroid.collidesWith(this.player)) {
         this.player.onAsteroidCollision();
@@ -77,18 +72,16 @@ export class Game {
         continue;
       }
 
-      this.draw(asteroid);
+      asteroid.draw(this.canvas.context);
     }
   }
 
   private loop(timestamp: number) {
-    const ctx = this.canvas.getContext();
-
     this.drawBackground();
     const delta = timestamp - this.lastTimestamp;
 
-    this.player.update(delta);
-    this.player.draw(ctx);
+    this.player.update(delta, this.canvas);
+    this.player.draw(this.canvas.context);
 
     this.updatePlayerBullets(delta);
     this.updateAsteroids(delta);
@@ -97,7 +90,7 @@ export class Game {
       this.initAsteroids();
     }
 
-    this.player.drawHealth(this.canvas.getContext());
+    this.player.drawHealth(this.canvas.context);
 
     this.frameId = window.requestAnimationFrame(this.loop.bind(this));
     this.lastTimestamp = timestamp;

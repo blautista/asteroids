@@ -1,6 +1,7 @@
 import { ConvexPolygon } from "./shared/Shape/ConvexPolygon.ts";
 import { GameObject2D } from "./shared/2DGameObject.ts";
 import { Vector2D } from "./shared/Vector.ts";
+import { Canvas } from "./shared/Canvas.ts";
 
 const APPEARANCE_OFFSET = 30;
 
@@ -36,19 +37,8 @@ export class Asteroid extends ConvexPolygon implements GameObject2D {
     this.vel = velocity;
   }
 
-  update(delta: number): void {
+  update(delta: number, canvas: Canvas): void {
     this.move(this.vel);
-
-    if (this.position.x < 0) {
-      this.position = new Vector2D(1024, this.position.y);
-    } else if (this.position.x > 1024) {
-      this.position = new Vector2D(0, this.position.y);
-    }
-
-    if (this.position.y < 0) {
-      this.position = new Vector2D(this.position.x, 768);
-    } else if (this.position.y > 768) {
-      this.position = new Vector2D(this.position.x, 0);
-    }
+    this.position = canvas.warpPositionAround(this.position);
   }
 }
