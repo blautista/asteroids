@@ -11,15 +11,9 @@ export class Game {
   private lastTimestamp = 0;
   private frameId: null | number = null;
 
-  private createPlayer() {
-    return new Player(
-      new Vector2D(Math.floor(this.canvas.width / 2), Math.floor(this.canvas.height / 2)),
-    );
-  }
-
   constructor(parent: HTMLElement) {
     this.canvas = new Canvas(parent);
-    this.player = this.createPlayer();
+    this.player = Player.createFromCentre(this.canvas);
   }
 
   private drawBackground() {
@@ -104,7 +98,7 @@ export class Game {
   }
 
   private initLevel() {
-    this.player = this.createPlayer();
+    this.player = Player.createFromCentre(this.canvas);
     this.initAsteroids();
   }
 

@@ -58,4 +58,8 @@ export class Canvas {
 
     return new Vector2D(x, y);
   }
+
+  getCentrePoint() {
+    return new Vector2D(Math.floor(this.width / 2), Math.floor(this.height / 2));
+  }
 }

@@ -23,6 +23,10 @@ export class Player extends ConvexPolygon implements GameObject2D {
   score = 0;
   bullets = new Set<Bullet>();
 
+  static createFromCentre(canvas: Canvas) {
+    return new Player(canvas.getCentrePoint());
+  }
+
   constructor(initialPosition: Vector2D) {
     super(initialPosition, playerPoints, 10);
   }
