@@ -99,7 +99,7 @@ export class Game {
 
   private initAsteroids() {
     for (let i = 0; i < 10; i++) {
-      this.asteroids.add(Asteroid.createFromEdge(this.canvas.width, this.canvas.height));
+      this.asteroids.add(Asteroid.createFromEdge(this.canvas));
     }
   }
 

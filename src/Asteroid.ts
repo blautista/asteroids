@@ -3,16 +3,11 @@ import { GameObject2D } from "./shared/2DGameObject.ts";
 import { Vector2D } from "./shared/Vector.ts";
 import { Canvas } from "./shared/Canvas.ts";
 
-const APPEARANCE_OFFSET = 30;
-
 export class Asteroid extends ConvexPolygon implements GameObject2D {
   private readonly vel: Vector2D;
 
-  static createFromEdge(width: number, height: number) {
-    const x = Math.random() > 0.5 ? -APPEARANCE_OFFSET : width + APPEARANCE_OFFSET;
-    const y = Math.random() * height;
-
-    return new Asteroid(new Vector2D(x, y), Vector2D.fromRandomAngle().multiply(1));
+  static createFromEdge(canvas: Canvas) {
+    return new Asteroid(canvas.randomPointInEdge(), Vector2D.fromRandomAngle().multiply(1));
   }
 
   static readonly scoresBySize = {

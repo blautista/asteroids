@@ -1,4 +1,5 @@
 import { Vector2D } from "./Vector.ts";
+import { Random } from "./Random.ts";
 
 export class Canvas {
   readonly canvas: HTMLCanvasElement;
@@ -39,6 +40,21 @@ export class Canvas {
     } else if (position.y > height) {
       y = position.y - height;
     }
+
+    return new Vector2D(x, y);
+  }
+
+  randomPointInEdge(): Vector2D {
+    const isVerticalEdge = Random.flipCoin();
+
+    if (isVerticalEdge) {
+      const x = Random.flipCoin() ? 0 : this.width;
+      const y = Random.int(0, this.height);
+      return new Vector2D(x, y);
+    }
+
+    const x = Random.int(0, this.width);
+    const y = Random.flipCoin() ? 0 : this.height;
 
     return new Vector2D(x, y);
   }
